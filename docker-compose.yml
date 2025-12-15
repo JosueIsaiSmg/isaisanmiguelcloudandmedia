@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # PHP-FPM Container
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cloudmedia_php
+    restart: unless-stopped
+    working_dir: /var/www/html
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=cloudmedia
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+    volumes:
+      - ./backend:/var/www/html
+      - ./storage:/var/www/html/storage
+    depends_on:
+      - db
+    networks:
+      - cloudmedia
+
+  # Nginx Web Server
+  nginx:
+    image: nginx:alpine
+    container_name: cloudmedia_nginx
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    volumes:
+      - ./backend:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx_logs:/var/log/nginx
+    depends_on:
+      - php
+    networks:
+      - cloudmedia
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: cloudmedia_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: cloudmedia
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - '3306:3306'
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./backend/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-psecret" ]
+      timeout: 20s
+      retries: 10
+    networks:
+      - cloudmedia
+
+  # Redis (opcional para cache/sessions)
+  redis:
+    image: redis:7-alpine
+    container_name: cloudmedia_redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    networks:
+      - cloudmedia
+
+networks:
+  cloudmedia:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
+  nginx_logs:
+    driver: local

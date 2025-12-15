@@ -1,0 +1,14 @@
+# Build context
+.git
+.gitignore
+.env
+.env.local
+*.log
+node_modules
+vendor
+.vscode
+.idea
+.DS_Store
+*.swp
+*.swo
+__pycache__
