@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: 'http://localhost:8080/api',
   headers: {
     'Content-Type': 'application/json',
+    'Accept-Charset': 'utf-8',
   },
 });
 
@@ -13,7 +14,7 @@ export default {
     return api.get(`/packages?country=${country}`);
   },
   getPackage(id) {
-    return api.get(`/packages/${id}`);
+    return api.get(`api/packages/${id}`);
   },
 
   // Clients
