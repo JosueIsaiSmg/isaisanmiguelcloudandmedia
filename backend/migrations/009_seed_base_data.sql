@@ -1,8 +1,43 @@
--- Seed 001: Insert base packages (OwnCloud, Jellyfin, Total)
-INSERT IGNORE INTO packages (slug, name, description) VALUES
-('owncloud', 'OwnCloud - Nube Privada', 'Instalación de servidor OwnCloud para almacenamiento privado de archivos, sincronización y seguridad.'),
-('jellyfin', 'Jellyfin - Streaming Multimedia', 'Instalación de servidor Jellyfin para streaming de música, películas y videos. Tu Netflix privado.'),
-('total', 'Paquete Total - Nube + Streaming', 'Instalación completa: OwnCloud + Jellyfin integrados en un solo servidor.');
+-- Migration 009: Seed/Update base packages con includes e ideal_for
+INSERT INTO packages (slug, name, description, includes, ideal_for)
+VALUES
+(
+  'owncloud',
+  'OwnCloud - Nube Privada',
+  'Instalación de servidor OwnCloud para almacenamiento privado de archivos, sincronización y seguridad.',
+  'Instalación de servidor OwnCloud en equipo del cliente o VPS.
+   1 usuario administrador listo para gestionar y crear más usuarios.
+   Configuración básica de almacenamiento y sincronización de archivos.
+   Acceso vía web y aplicaciones móviles.
+   Seguridad: HTTPS, control de permisos y cifrado de datos.',
+  'Empresas o usuarios que necesitan compartir documentos, fotos y archivos de forma privada y segura.'
+),
+(
+  'jellyfin',
+  'Jellyfin - Streaming Multimedia',
+  'Instalación de servidor Jellyfin para streaming de música, películas y videos. Tu Netflix privado.',
+  'Instalación de servidor Jellyfin para música, películas y videos.
+   Configuración inicial para acceso desde cualquier dispositivo (TV, móvil, PC).
+   Organización automática de biblioteca multimedia con carátulas y metadatos.
+   1 usuario administrador para gestionar contenido.',
+  'Usuarios que quieren un “Netflix privado” para su colección de música y películas.'
+),
+(
+  'total',
+  'Paquete Total - Nube + Streaming',
+  'Instalación completa: OwnCloud + Jellyfin integrados en un solo servidor.',
+  'Instalación de OwnCloud con usuario administrador y gestión de archivos.
+   Instalación de Jellyfin para streaming multimedia.
+   Integración opcional: acceso unificado con las mismas credenciales.
+   Configuración de seguridad y optimización de red para ambos servicios.',
+  'Clientes que desean tener todo en un solo servidor: nube privada para documentos y streaming multimedia para entretenimiento.'
+)
+ON DUPLICATE KEY UPDATE
+  name = VALUES(name),
+  description = VALUES(description),
+  includes = VALUES(includes),
+  ideal_for = VALUES(ideal_for);
+
 
 -- Seed 002: Insert package prices for Mexico (MXN)
 INSERT IGNORE INTO package_prices (package_id, country, currency, price_cents, extra_ticket_price_cents) VALUES

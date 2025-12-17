@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Database;
 
 class Connection
@@ -7,26 +8,30 @@ class Connection
 
     public static function getPDO(): \PDO
     {
-        if (self::$pdo instanceof \PDO) {
-            return self::$pdo;
+        if (self::$pdo === null) {
+            $user = getenv('DB_USERNAME') ?: 'root';
+            $pass = getenv('DB_PASSWORD') ?: 'secret';
+
+            $dsn = "mysql:host=" . getenv('DB_HOST') .
+                ";port=" . getenv('DB_PORT') .
+                ";dbname=" . getenv('DB_DATABASE') .
+                ";charset=utf8mb4";
+            try {
+                self::$pdo = new \PDO(
+                    $dsn,
+                    $user,
+                    $pass,
+                    [
+                        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                        \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+                    ]
+                );
+            } catch (\Exception $e) {
+                error_log("Connection error: " . $e->getMessage());
+                throw $e;
+            }
         }
-
-        $config = require __DIR__ . '/../../config.php';
-        $db = $config['db'];
-
-        $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=%s', $db['host'], $db['port'], $db['database'], $db['charset']);
-
-        try {
-            self::$pdo = new \PDO($dsn, $db['username'], $db['password'], [
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
-                \PDO::ATTR_EMULATE_PREPARES => false,
-            ]);
-        } catch (\PDOException $e) {
-            throw $e;
-        }
-
         return self::$pdo;
     }
 }

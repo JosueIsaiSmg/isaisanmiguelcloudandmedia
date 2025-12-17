@@ -18,7 +18,7 @@ echo "Iniciando migraciones...\n";
 
 try {
     $pdo = Connection::getPDO();
-    
+
     $migrationsDir = __DIR__ . '/migrations';
     $files = glob($migrationsDir . '/*.sql');
     sort($files);

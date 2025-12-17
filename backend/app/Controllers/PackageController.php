@@ -16,6 +16,8 @@ class PackageController extends BaseController
                     p.slug,
                     p.name,
                     p.description,
+                    p.ideal_for,
+                    p.includes,
                     pp.price_cents,
                     pp.currency,
                     pp.extra_ticket_price_cents
@@ -43,6 +45,8 @@ class PackageController extends BaseController
                     p.slug,
                     p.name,
                     p.description,
+                    p.ideal_for,
+                    p.includes,
                     pp.price_cents,
                     pp.currency,
                     pp.extra_ticket_price_cents

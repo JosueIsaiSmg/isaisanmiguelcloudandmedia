@@ -23,14 +23,14 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
         }
     }
 }
-
 return [
     'db' => [
-        'host' => getenv('DB_HOST') ?: '127.0.0.1',
-        'port' => getenv('DB_PORT') ?: '3306',
-        'database' => getenv('DB_DATABASE') ?: 'cloudmedia',
-        'username' => getenv('DB_USERNAME') ?: 'sir1sai',
-        'password' => getenv('DB_PASSWORD') ?: 'password123',
+        'host' => getenv('DB_HOST') ?: 'db',
+        'port' => getenv('DB_PORT'),
+        'database' => getenv('DB_DATABASE'),
+        'username' => getenv('DB_USERNAME'),
+        'password' => getenv('DB_PASSWORD'),
         'charset' => 'utf8mb4'
     ]
 ];
+
